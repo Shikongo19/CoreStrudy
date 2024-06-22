@@ -32,6 +32,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -88,7 +89,12 @@ dependencies {
 
     //fonts
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation (libs.androidx.ui.text.google.fonts.v154)
+
 
     //Desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // system UI Controller
+    implementation(libs.accompanist.systemuicontroller)
 }

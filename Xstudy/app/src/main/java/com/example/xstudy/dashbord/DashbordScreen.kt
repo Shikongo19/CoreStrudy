@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -35,7 +36,8 @@ private  fun DashbordScreenTopBar(){
     CenterAlignedTopAppBar(
         title = {
             Text(text = "Study Smart",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = Color(0xff009177)
             )
         }
     )

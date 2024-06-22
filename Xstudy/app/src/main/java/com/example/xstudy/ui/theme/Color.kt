@@ -2,7 +2,7 @@ package com.example.xstudy.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val md_theme_light_primary = Color(0xFF185ABE)
+val md_theme_light_primary = Color(0xff009177)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFD8E2FF)
 val md_theme_light_onPrimaryContainer = Color(0xFF001A43)
@@ -33,7 +33,7 @@ val md_theme_light_surfaceTint = Color(0xFF185ABE)
 val md_theme_light_outlineVariant = Color(0xFFC5C6D0)
 val md_theme_light_scrim = Color(0xFF000000)
 
-val md_theme_dark_primary = Color(0xFFAEC6FF)
+val md_theme_dark_primary = Color(0xff009177)
 val md_theme_dark_onPrimary = Color(0xFF002E6C)
 val md_theme_dark_primaryContainer = Color(0xFF004397)
 val md_theme_dark_onPrimaryContainer = Color(0xFFD8E2FF)
