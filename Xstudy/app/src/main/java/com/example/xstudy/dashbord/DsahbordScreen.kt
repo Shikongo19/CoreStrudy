@@ -35,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,38 +46,14 @@ import com.example.xstudy.components.DeleteDialog
 import com.example.xstudy.components.SubjectCard
 import com.example.xstudy.components.studySessionsList
 import com.example.xstudy.components.taskList
-import com.example.xstudy.domain.model.Session
 import com.example.xstudy.domain.model.Subject
-import com.example.xstudy.domain.model.Task
+import com.example.xstudy.sessions
+import com.example.xstudy.subjects
+import com.example.xstudy.tasks
 
 @Composable
 fun DashboardScreen(){
 
-    val subjects = listOf(
-        Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[0], subjectID = 0),
-        Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[2], subjectID = 0),
-        Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[3], subjectID = 0),
-        Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[1], subjectID = 0),
-        Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[0], subjectID = 0),
-        Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[2], subjectID = 0)
-    )
-
-    val tasks = listOf(
-        Task(title = "Prepare notes", description = "", dueDate = 0L, priority = 0, relatedSubject = "", isComplete = false, taskID = 0, taskSubjectID = 0),
-        Task(title = "Study", description = "", dueDate = 0L, priority = 1, relatedSubject = "", isComplete = true, taskID = 0, taskSubjectID = 0),
-        Task(title = "Take Quize", description = "", dueDate = 0L, priority = 2, relatedSubject = "", isComplete = false, taskID = 0, taskSubjectID = 0),
-        Task(title = "Read Story Book", description = "", dueDate = 0L, priority = 1, relatedSubject = "", isComplete = false, taskID = 0, taskSubjectID = 0),
-        Task(title = "Exercise", description = "", dueDate = 0L, priority = 0, relatedSubject = "", isComplete = true, taskID = 0, taskSubjectID = 0),
-        Task(title = "Write test", description = "", dueDate = 0L, priority = 2, relatedSubject = "", isComplete = true, taskID = 0, taskSubjectID = 0),
-
-    )
-
-    val sessions = listOf(
-        Session(sessionID = 0, relatedToSubject = "Math", date = 0L, duration = 3, sessionSubjectID = 1),
-        Session(sessionID = 0, relatedToSubject = "Programming", date = 0L, duration = 3, sessionSubjectID = 1),
-        Session(sessionID = 0, relatedToSubject = "MIT", date = 0L, duration = 3, sessionSubjectID = 1),
-        Session(sessionID = 0, relatedToSubject = "Software Verifications And Validations", date = 0L, duration = 3, sessionSubjectID = 1),
-    )
 
     var isAddSubject  by rememberSaveable {mutableStateOf(false)}
     var isDeleteSession  by rememberSaveable {mutableStateOf(false)}
@@ -150,8 +125,8 @@ fun DashboardScreen(){
 
             taskList(
                 sectionTitle = "UPCOMING TASKS",
-                emptyListText = "You don't have any upcomming tasks.\n " +
-                        "Click the + buton in subject screen to add new task.",
+                emptyListText = "You don't have any upcoming tasks.\n " +
+                        "Click the + button in subject screen to add new task.",
                 tasks = tasks,
                 onCheckBoxClick = {},
                 onTaskCardClick = {}

@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -32,12 +33,16 @@ fun CountCard(
         ) {
             Text(
                 text = headingText,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
             Spacer(modifier = Modifier.padding(5.dp))
             Text(
                 text = count,
-                style = MaterialTheme.typography.bodySmall.copy(fontSize = 30.sp)
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 30.sp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }
