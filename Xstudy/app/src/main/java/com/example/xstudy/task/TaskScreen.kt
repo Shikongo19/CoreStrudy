@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -43,6 +42,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -53,13 +53,30 @@ import com.example.xstudy.components.TaskDatePicker
 import com.example.xstudy.subjects
 import com.example.xstudy.util.Priority
 import com.example.xstudy.util.changeMillisToDateString
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 import java.time.Instant
+
+data class TaskScreeNavArgn(val subjectID: Int?, val taskID: Int?)
+
+@Destination(navArgsDelegate = TaskScreeNavArgn::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun TaskScreenRoute(
+    navigator: DestinationsNavigator,
+){
+    TaskScreen(
+        onBackArrowClick = {navigator.popBackStack()}
+    )
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskScreen(){
+private fun TaskScreen(
+    onBackArrowClick: () -> Unit,
+){
 
     var isDeleteTask  by rememberSaveable { mutableStateOf(false) }
     var isDatePickerDialogOpen  by rememberSaveable { mutableStateOf(false) }
@@ -120,7 +137,7 @@ fun TaskScreen(){
                 onDeleteButtonClick = {isDeleteTask = true},
                 isCompleted = false,
                 checkBoxBorderColor = Color.Red,
-                onCheckBoxClick = {}
+                onCheckBoxClick = onBackArrowClick
             )
         }
     ){ paddingValues ->

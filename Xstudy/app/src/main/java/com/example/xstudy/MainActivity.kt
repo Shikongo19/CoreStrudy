@@ -6,21 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.xstudy.dashbord.DashboardScreen
 import com.example.xstudy.domain.model.Session
 import com.example.xstudy.domain.model.Subject
 import com.example.xstudy.domain.model.Task
-import com.example.xstudy.module.SubjectScreen
-import com.example.xstudy.task.TaskScreen
 import com.example.xstudy.ui.theme.XstudyTheme
+import com.ramcosta.composedestinations.DestinationsNavHost
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.S)
@@ -29,9 +19,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             XstudyTheme {
-               // DashboardScreen()
-                //SubjectScreen()
-                TaskScreen()
+               DestinationsNavHost(navGraph = NavGraphs.root)
             }
         }
     }
@@ -39,11 +27,11 @@ class MainActivity : ComponentActivity() {
 
 val subjects = listOf(
     Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[0], subjectID = 0),
-    Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[2], subjectID = 0),
-    Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[3], subjectID = 0),
-    Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[1], subjectID = 0),
-    Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[0], subjectID = 0),
-    Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[2], subjectID = 0)
+    Subject(name = "Math", goalHours = 12f, colors = Subject.subjectCardColors[2], subjectID = 1),
+    Subject(name = "Physic", goalHours = 12f, colors = Subject.subjectCardColors[3], subjectID = 2),
+    Subject(name = "Programming", goalHours = 12f, colors = Subject.subjectCardColors[1], subjectID = 3),
+    Subject(name = "Biology", goalHours = 12f, colors = Subject.subjectCardColors[0], subjectID = 4),
+    Subject(name = "Data Networks", goalHours = 12f, colors = Subject.subjectCardColors[2], subjectID = 5)
 )
 
 val tasks = listOf(
