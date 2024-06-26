@@ -116,7 +116,7 @@ private fun TaskCard(
                         TextDecoration.None
                     },
                     fontWeight = FontWeight.W700,
-                    fontSize = 13.sp
+                    fontSize = 13 .sp
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
