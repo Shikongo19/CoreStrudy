@@ -16,6 +16,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -25,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,72 +43,107 @@ import kotlinx.coroutines.delay
 @Composable
 fun authentication(appViewModel: AppViewModel): Boolean {
     val isLoading by appViewModel.isLoading.collectAsState()
-    val next by rememberSaveable { mutableStateOf(false) }
+    var next by rememberSaveable { mutableStateOf(false) }
+
+    val isGuest by appViewModel.isGuest.collectAsState()
+    val isReturningUser by appViewModel.isReturningUser.collectAsState()
 
     val authenticated by appViewModel.authenticated.collectAsState()
     val isLogin by appViewModel.isLogin.collectAsState()
 
-    WelcomeScreen(
-        onGetStarted = {}
-    )
+    val isLoggedOut by appViewModel.isLogout.collectAsState()
+    val username by appViewModel.isUsername.collectAsState()
 
-    if (next){
-        if (isLogin) {
-            ScreenLoader(isLoading = isLoading) {
-            }
-            LaunchedEffect(Unit) {
-                delay(1500)
-                appViewModel.setIsLoading(false)
-            }
-            if (!isLoading){
-                Column (
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ){
 
-                    Button(onClick = {
-                        appViewModel.setAuthenticated(true)
-                        appViewModel.setIsLogin(true)
-                    }) {
-                        Text(text = "Login")
-                    }
-                    TextButton(onClick = {
-                        appViewModel.setIsLogin(false)
-                        appViewModel.setIsLoading(true)
-                    }) {
-                        Text(text = "Register")
-                    }
-                }
-            }
+    if (!next){
+        ScreenLoader(isLoading = isLoading) {}
+        LaunchedEffect(Unit) {
+            delay(1500)
+            appViewModel.setIsLoading(false)
         }
-        else {
+        if (!isLoading){
+            WelcomeScreen(
+                onGetStarted = {
+                    appViewModel.setIsLoading(true)
+                    next = true
+                }
+            )
+        }
+    }
+    else{
+        if (!isLoggedOut){
             ScreenLoader(isLoading = isLoading) {}
             LaunchedEffect(Unit) {
                 delay(1500)
                 appViewModel.setIsLoading(false)
             }
             if (!isLoading){
-                Column (
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ){
-                    Button(onClick = { /*TODO*/ }) {
-                        Text(text = "Register")
-                    }
-                    TextButton(onClick = {
+                ReturningUserScreen(
+                    username = username,
+                    onContinue = {
+                        appViewModel.setAuthenticated(true)
                         appViewModel.setIsLogin(true)
-                        appViewModel.setIsLoading(true)
-                    }) {
-                        Text(text = "Login")
                     }
-                }
+                )
             }
 
         }
-    }
+        else{
+            if (isLogin) {
+                ScreenLoader(isLoading = isLoading) {
+                }
+                LaunchedEffect(Unit) {
+                    delay(1500)
+                    appViewModel.setIsLoading(false)
+                }
+                if (!isLoading){
+                    Column (
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ){
 
+                        Button(onClick = {
+                            appViewModel.setAuthenticated(true)
+                            appViewModel.setIsLogin(true)
+                        }) {
+                            Text(text = "Login")
+                        }
+                        TextButton(onClick = {
+                            appViewModel.setIsLogin(false)
+                            appViewModel.setIsLoading(true)
+                        }) {
+                            Text(text = "Register")
+                        }
+                    }
+                }
+            }
+            else {
+                ScreenLoader(isLoading = isLoading) {}
+                LaunchedEffect(Unit) {
+                    delay(1500)
+                    appViewModel.setIsLoading(false)
+                }
+                if (!isLoading){
+                    Column (
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ){
+                        Button(onClick = { /*TODO*/ }) {
+                            Text(text = "Register")
+                        }
+                        TextButton(onClick = {
+                            appViewModel.setIsLogin(true)
+                            appViewModel.setIsLoading(true)
+                        }) {
+                            Text(text = "Login")
+                        }
+                    }
+                }
+            }
+        }
+    }
     return authenticated
 }
 
@@ -115,9 +153,7 @@ fun WelcomeScreen(onGetStarted: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(state = rememberScrollState())
-            .background(
-                color = MaterialTheme.colorScheme.background
-            ),
+            .background(color = MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -156,17 +192,14 @@ fun WelcomeScreen(onGetStarted: () -> Unit) {
             color = MaterialTheme.colorScheme.tertiary
         )
 
-        Column(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(25.dp)
-                .clip(RoundedCornerShape(size = 16.dp))
-                .background(
-                    color = MaterialTheme.colorScheme.inverseSurface,
-                ),
+                .padding(20.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column (
-                modifier = Modifier.padding(5.dp)
+                modifier = Modifier.padding(5.dp),
             ){
                 BulletPoint("Organize your study materials")
                 BulletPoint("Create effective study schedules")

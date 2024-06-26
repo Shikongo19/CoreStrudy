@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.xstudy.authentication.ReturningUserScreen
 import com.example.xstudy.authentication.authentication
 import com.example.xstudy.domain.model.Session
 import com.example.xstudy.domain.model.Subject
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
             XstudyTheme {
                 val appViewModel: AppViewModel = viewModel()
                 var isToNextPage by rememberSaveable { mutableStateOf(false) }
+                var isDone by rememberSaveable { mutableStateOf(false) }
                 val isLoading by appViewModel.isLoading.collectAsState()
 
                 val authenticated by appViewModel.authenticated.collectAsState()
@@ -51,7 +53,6 @@ class MainActivity : ComponentActivity() {
                     }
                     if (isToNextPage){
                         DestinationsNavHost(navGraph = NavGraphs.root)
-                        appViewModel.setIsLoading(false)
                     }
                     ScreenLoader(isLoading = isLoading) {
                     }
