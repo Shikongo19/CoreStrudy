@@ -38,12 +38,13 @@ fun ForgotPasswordDialog(
     var registerConfirmPasswordError by rememberSaveable { mutableStateOf<String?>(null) }
     var registerOverAllError by rememberSaveable { mutableStateOf<String?>(null) }
 
-    registerPasswordError = when{
+    registerPasswordError = when {
         registerPassword.isBlank() -> "Please enter Password !!!"
         registerPassword.length < 8 -> "Password is too short!!!"
         registerPassword.length > 20 -> "Password is too long !!!"
         registerPassword.count { it.isLetterOrDigit() } < 1 -> "Password must contain at least one letter and one number !!!"
-        registerPassword.count { it.isUpperCase() } < 1 -> "Password must contain at least one capital letter "
+        registerPassword.count { it.isUpperCase() } < 1 -> "Password must contain at least one capital letter !!!"
+        registerPassword.count { !it.isLetterOrDigit() } < 1 -> "Password must contain at least one special character !!!"
         else -> null
     }
 
@@ -68,11 +69,17 @@ fun ForgotPasswordDialog(
             )},
             text = {
                 Column {
+                    Text(
+                        text = "Are yore sure you want to reset your password? This action cannot be undone.",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.inverseSurface
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
                     if (registerOverAllError == null){
                         Text(
-                            text = "Please enter your credentials to continue.",
+                            text = "This will be your new login password after resetting.",
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.inverseSurface
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                     else{
@@ -85,7 +92,7 @@ fun ForgotPasswordDialog(
                     Spacer(modifier = Modifier.height(20.dp))
                     Row (
                         modifier = Modifier
-                            .width(290.dp)
+                            .width(300.dp)
                     ){
                         Column (
                             modifier = Modifier
@@ -113,7 +120,7 @@ fun ForgotPasswordDialog(
                                 value = registerConfirmPassword,
                                 onValueChange = onConfirmPasswordChange,
                                 label = { Text(
-                                    text = "Confirm Password",
+                                    text = "Confirm Pas...",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.primary
                                 )},

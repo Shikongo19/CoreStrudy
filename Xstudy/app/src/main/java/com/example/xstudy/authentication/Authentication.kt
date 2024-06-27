@@ -3,6 +3,7 @@ package com.example.xstudy.authentication
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -95,12 +96,13 @@ fun authentication(appViewModel: AppViewModel): Boolean {
         else -> null
     }
 
-    registerPasswordError = when{
+    registerPasswordError = when {
         registerPassword.isBlank() -> "Please enter Password !!!"
         registerPassword.length < 8 -> "Password is too short!!!"
         registerPassword.length > 20 -> "Password is too long !!!"
         registerPassword.count { it.isLetterOrDigit() } < 1 -> "Password must contain at least one letter and one number !!!"
-        registerPassword.count { it.isUpperCase() } < 1 -> "Password must contain at least one capital letter "
+        registerPassword.count { it.isUpperCase() } < 1 -> "Password must contain at least one capital letter !!!"
+        registerPassword.count { !it.isLetterOrDigit() } < 1 -> "Password must contain at least one special character !!!"
         else -> null
     }
 
@@ -250,6 +252,7 @@ fun WelcomeScreen(onGetStarted: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(state = rememberScrollState())
+            .horizontalScroll(state = rememberScrollState())
             .background(color = MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -257,11 +260,11 @@ fun WelcomeScreen(onGetStarted: () -> Unit) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Welcome to StudyBuddy!",
+            text = "Welcome to Xstudy!",
             style = MaterialTheme.typography.headlineLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 26.dp)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -283,7 +286,7 @@ fun WelcomeScreen(onGetStarted: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "StudyBuddy helps you:",
+            text = "Xstudy helps you:",
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.tertiary
@@ -356,7 +359,9 @@ private fun Login(
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background),
+            .background(color = MaterialTheme.colorScheme.background)
+            .verticalScroll(state = rememberScrollState())
+            .horizontalScroll(state = rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
@@ -455,7 +460,7 @@ private fun Login(
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier
-                            .clickable { onForgotPasswordClick()}
+                            .clickable { onForgotPasswordClick() }
                             .padding(end = 10.dp),
                         textDecoration = TextDecoration.Underline
                     )
@@ -512,9 +517,12 @@ private fun Register(
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background),
+            .background(color = MaterialTheme.colorScheme.background)
+            .verticalScroll(state = rememberScrollState())
+            .horizontalScroll(state = rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+
     ){
         Card (
             modifier = Modifier
