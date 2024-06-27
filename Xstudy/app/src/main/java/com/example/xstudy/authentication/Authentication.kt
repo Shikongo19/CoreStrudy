@@ -435,7 +435,7 @@ private fun Login(
                         .width(250.dp)
                         .clip(RoundedCornerShape(10.dp)),
                     enabled = userNameError == null && userPasswordError == null,
-                    onClick = { /*TODO*/ }
+                    onClick = { appViewModel.setAuthenticated(true) }
                 ) {
                     Text(text = "Login")
                 }
