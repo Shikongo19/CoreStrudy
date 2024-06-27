@@ -1,6 +1,8 @@
 package com.example.xstudy.repositories
 
 import androidx.lifecycle.ViewModel
+import com.example.xstudy.domain.model.MotivationQuote
+import com.example.xstudy.domain.model.Users
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -42,6 +44,22 @@ class AppViewModel : ViewModel() {
     private val _isUsername = MutableStateFlow("")
 
     val isUsername = _isUsername.asStateFlow()
+
+    private val _users = MutableStateFlow(mutableListOf<Users>())
+    private val _motivationQuotes = MutableStateFlow(mutableListOf<MotivationQuote>())
+
+    val users = _users.asStateFlow()
+    val motivationQuotes = _motivationQuotes.asStateFlow()
+
+    // Function to update users list
+    fun setUsers(value: Users) {
+        _users.value.add(value)
+    }
+
+    // Function to update motivation quotes list
+    fun setMotivationQuotes(value: MotivationQuote) {
+        _motivationQuotes.value.add(value)
+    }
 
     // Function to update authentication status
     fun setAuthenticated(value: Boolean) {

@@ -44,9 +44,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.xstudy.R
+import com.example.xstudy.domain.model.Users
 import com.example.xstudy.loader.ScreenLoader
 import com.example.xstudy.repositories.AppViewModel
 import kotlinx.coroutines.delay
+import kotlin.random.Random
 
 @Composable
 fun authentication(appViewModel: AppViewModel): Boolean {
@@ -208,7 +210,23 @@ fun authentication(appViewModel: AppViewModel): Boolean {
                         userNameError = userNameError,
                         overAllError = overAllError,
                         appViewModel = appViewModel,
-                        onForgotPasswordClick = { isForgotPassword = true}
+                        onForgotPasswordClick = { isForgotPassword = true },
+                        onLoginButtonClick ={
+                            if (
+                                LoginAuth(
+                                    loginUsername = loginUsername,
+                                    loginPassword = loginPassword,
+                                    viewModel = appViewModel
+                                )
+                            ){
+                                appViewModel.setAuthenticated(true)
+                                appViewModel.setIsLogin(false)
+                                appViewModel.setIsUsername(loginUsername)
+                            }
+                            else{
+                                overAllError = "Invalid Username or Password"
+                            }
+                        }
                     )
                 }
             }
@@ -237,7 +255,25 @@ fun authentication(appViewModel: AppViewModel): Boolean {
                         onConfirmPasswordChange = { registerConfirmPassword = it},
                         onFirstNameChange = { firstName = it},
                         onLastNameChange = { lastName = it},
-                        onRegisterButtonClick = {appViewModel.setIsLogin(true)}
+                        onRegisterButtonClick = {
+
+                            if (
+                                RegistrationAuth(
+                                    registerUsername = registerUsername,
+                                    registerPassword = registerPassword,
+                                    firstName = firstName,
+                                    lastName = lastName,
+                                    appViewModel = appViewModel
+                                )
+                            )
+                            {
+                                appViewModel.setAuthenticated(true)
+                                appViewModel.setIsLogin(true)
+                            }
+                            else{
+                                registerOverAllError = "Username already exists"
+                            }
+                        }
                     )
                 }
             }
@@ -354,7 +390,8 @@ private fun Login(
     userNameError: String?,
     overAllError: String?,
     appViewModel: AppViewModel,
-    onForgotPasswordClick: () -> Unit
+    onForgotPasswordClick: () -> Unit,
+    onLoginButtonClick: () -> Unit
 ){
     Column (
         modifier = Modifier
@@ -380,7 +417,7 @@ private fun Login(
             ){
                 Column (
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .width(320.dp)
                         .padding(horizontal = 45.dp)
                 ){
                     Text(
@@ -435,7 +472,7 @@ private fun Login(
                         .width(250.dp)
                         .clip(RoundedCornerShape(10.dp)),
                     enabled = userNameError == null && userPasswordError == null,
-                    onClick = { appViewModel.setAuthenticated(true) }
+                    onClick = { onLoginButtonClick() }
                 ) {
                     Text(text = "Login")
                 }
@@ -533,7 +570,7 @@ private fun Register(
             Spacer(modifier = Modifier.height(50.dp))
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .width(320.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -693,4 +730,64 @@ private fun Register(
             Spacer(modifier = Modifier.height(50.dp))
         }
     }
+}
+
+fun RegistrationAuth(
+    registerUsername: String,
+    registerPassword: String,
+    firstName: String,
+    lastName: String,
+    appViewModel: AppViewModel
+): Boolean{
+    val allUsers = appViewModel.users
+    var isUser: Boolean = false
+    var isRegistration: Boolean = false
+
+    allUsers.value.forEach { users ->
+        if (users.email == registerUsername){
+            isUser = true
+        }
+    }
+
+    if (!isUser) {
+
+        appViewModel.setUsers(
+            Users(
+                id = Random(999999999).nextInt(),
+                firstName = firstName,
+                lastName = lastName,
+                email = registerUsername,
+                password = registerPassword
+            )
+        )
+
+        isRegistration = true
+    }
+    return isRegistration
+}
+
+fun LoginAuth(
+        loginUsername: String,
+        loginPassword: String,
+        viewModel: AppViewModel
+    ): Boolean
+{
+    val allUsers = viewModel.users
+    var isLogin: Boolean = false
+    var isUser: Boolean = false
+
+    allUsers.value.forEach { users ->
+        if (
+            users.email == loginUsername && users.password == loginPassword
+        )
+        {
+            isUser = true
+        }
+    }
+
+    if (isUser){
+        isLogin = true
+    }
+
+    return isLogin
 }

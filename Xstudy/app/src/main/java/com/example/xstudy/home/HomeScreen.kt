@@ -90,7 +90,7 @@ fun HomeTopBar(
                         .clickable(onClick = onProfileClick)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("$firstName ${lastName.first()}.")
+                Text("$firstName ${lastName}.")
             }
         },
         actions = {

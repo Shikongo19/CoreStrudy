@@ -39,31 +39,29 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             XstudyTheme {
-                //val appViewModel: AppViewModel = viewModel()
-//                var isToNextPage by rememberSaveable { mutableStateOf(false) }
-//                var isDone by rememberSaveable { mutableStateOf(false) }
-//                val isLoading by appViewModel.isLoading.collectAsState()
-//
-//                val authenticated by appViewModel.authenticated.collectAsState()
+                val appViewModel: AppViewModel = viewModel()
+                var isToNextPage by rememberSaveable { mutableStateOf(false) }
+                var isDone by rememberSaveable { mutableStateOf(false) }
+                val isLoading by appViewModel.isLoading.collectAsState()
 
-                DestinationsNavHost(navGraph = NavGraphs.root)
+                val authenticated by appViewModel.authenticated.collectAsState()
 
-//                if (authenticated){
-//                    appViewModel.setIsLoading(true)
-//                    LaunchedEffect(Unit) {
-//                        delay(1000)
-//                        isToNextPage = true
-//                    }
-//                    if (isToNextPage){
-//                        DestinationsNavHost(navGraph = NavGraphs.root)
-//                        appViewModel.setIsLoading(false)
-//                    }
-//                    ScreenLoader(isLoading = isLoading) {
-//                    }
-//                }
-//                else{
-//                    authentication(appViewModel)
-//                }
+                if (authenticated){
+                    appViewModel.setIsLoading(true)
+                    LaunchedEffect(Unit) {
+                        delay(1000)
+                        isToNextPage = true
+                    }
+                    if (isToNextPage){
+                        DestinationsNavHost(navGraph = NavGraphs.root)
+                        appViewModel.setIsLoading(false)
+                    }
+                    ScreenLoader(isLoading = isLoading) {
+                    }
+                }
+                else{
+                    authentication(appViewModel)
+                }
 
             }
         }
