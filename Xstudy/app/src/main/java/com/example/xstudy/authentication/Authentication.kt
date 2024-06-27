@@ -51,6 +51,7 @@ import kotlinx.coroutines.delay
 fun authentication(appViewModel: AppViewModel): Boolean {
     val isLoading by appViewModel.isLoading.collectAsState()
     var next by rememberSaveable { mutableStateOf(false) }
+    var isForgotPassword  by rememberSaveable {mutableStateOf(false)}
 
     var loginUsername by rememberSaveable { mutableStateOf("") }
     var loginPassword by rememberSaveable { mutableStateOf("") }
@@ -144,6 +145,16 @@ fun authentication(appViewModel: AppViewModel): Boolean {
         else -> null
     }
 
+    ForgotPasswordDialog(
+        isOpen = isForgotPassword,
+        registerPassword = registerPassword,
+        registerConfirmPassword = registerConfirmPassword,
+        onDismissRequest = { isForgotPassword = false},
+        onConfirmButtonClick = { appViewModel.setIsLogin(true)},
+        onPasswordChange = {registerPassword = it},
+        onConfirmPasswordChange = {registerConfirmPassword = it}
+    )
+
     if (!next){
         ScreenLoader(isLoading = isLoading) {}
         LaunchedEffect(Unit) {
@@ -186,123 +197,17 @@ fun authentication(appViewModel: AppViewModel): Boolean {
                     appViewModel.setIsLoading(false)
                 }
                 if (!isLoading){
-                    Column (
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(color = MaterialTheme.colorScheme.background),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ){
-                        
-                        Column (
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 45.dp)
-                        ){
-                            Spacer(modifier = Modifier.height(100.dp))
-                            Text(
-                                text = "Login Now!",
-                                style = MaterialTheme.typography.headlineLarge,
-                                color = MaterialTheme.colorScheme.tertiary,
-                                fontWeight = FontWeight.W700
-                            )
-                            Spacer(modifier = Modifier.height(24.dp))
-                            if (overAllError == null){
-                                Text(
-                                    text = "Please enter your credentials to continue.",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.inverseSurface
-                                )
-                            }
-                            else{
-                                Text(
-                                    text = overAllError.orEmpty(),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = Color.Red
-                                )
-                            }
-
-                        }
-                        Spacer(modifier = Modifier.height(20.dp))
-                        OutlinedTextField(
-                            value = loginUsername,
-                            onValueChange = {loginUsername = it},
-                            label = { Text(text = "Username")},
-                            singleLine = true,
-                            isError = userNameError != null && loginUsername.isNotBlank(),
-                            supportingText = { Text(text = userNameError.orEmpty())}
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                        OutlinedTextField(
-                            value = loginPassword,
-                            onValueChange = {loginPassword = it},
-                            label = { Text(text = "Password")},
-                            singleLine = true,
-                            isError = userPasswordError != null && loginPassword.isNotBlank(),
-                            supportingText = { Text(text = userPasswordError.orEmpty())}
-                        )
-
-                        Spacer(modifier = Modifier.height(40.dp))
-                        ElevatedButton(
-                            modifier = Modifier
-                                .width(250.dp)
-                                .clip(RoundedCornerShape(10.dp)),
-                            enabled = userNameError == null && userPasswordError == null,
-                            onClick = { /*TODO*/ }
-                        ) {
-                            Text(text = "Login")
-                        }
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Row (
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 30.dp),
-                            horizontalArrangement = Arrangement.End
-                        ){
-                            Text(
-                                text = "Forgot",
-                                style = MaterialTheme.typography.titleMedium,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.inverseSurface,
-                                modifier = Modifier
-                                    .clickable { }
-                                    .padding(end = 10.dp)
-                            )
-                            Text(
-                                text = "password?",
-                                style = MaterialTheme.typography.titleMedium,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.tertiary,
-                                modifier = Modifier
-                                    .clickable { }
-                                    .padding(end = 10.dp),
-                                textDecoration = TextDecoration.Underline
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(50.dp))
-                        Row {
-                            Text(
-                                text = "Don't have an account?",
-                                style = MaterialTheme.typography.titleMedium,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.inverseSurface
-                            )
-                            Text(
-                                text = "Register",
-                                style = MaterialTheme.typography.titleMedium,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.tertiary,
-                                modifier = Modifier
-                                    .clickable {
-                                        appViewModel.setIsLogin(false)
-                                        appViewModel.setIsLoading(true)
-                                    }
-                                    .padding(start = 10.dp),
-                                textDecoration = TextDecoration.Underline
-                            )
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
+                    Login(
+                        loginUsername = loginUsername,
+                        loginPassword = loginPassword,
+                        onPasswordChange = { loginPassword = it },
+                        onUsernameChange = { loginUsername = it },
+                        userPasswordError = userPasswordError ,
+                        userNameError = userNameError,
+                        overAllError = overAllError,
+                        appViewModel = appViewModel,
+                        onForgotPasswordClick = { isForgotPassword = true}
+                    )
                 }
             }
             else {
@@ -312,178 +217,26 @@ fun authentication(appViewModel: AppViewModel): Boolean {
                     appViewModel.setIsLoading(false)
                 }
                 if (!isLoading){
-                    Column (
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(color = MaterialTheme.colorScheme.background),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ){
-
-                        Column (
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 45.dp)
-                        ){
-                            Spacer(modifier = Modifier.height(100.dp))
-                            Text(
-                                text = "Sign Up Now!",
-                                style = MaterialTheme.typography.headlineLarge,
-                                color = MaterialTheme.colorScheme.tertiary,
-                                fontWeight = FontWeight.W700
-                            )
-                            Spacer(modifier = Modifier.height(24.dp))
-                            if (registerOverAllError == null){
-                                Text(
-                                    text = "Please enter your credentials to continue.",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.inverseSurface
-                                )
-                            }
-                            else{
-                                Text(
-                                    text = registerOverAllError.orEmpty(),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = Color.Red
-                                )
-                            }
-
-                        }
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Row (
-                            modifier = Modifier
-                                .width(290.dp)
-                        ){
-                            Column (
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(horizontal = 5.dp)
-                            ){
-                                OutlinedTextField(
-                                    value = firstName,
-                                    onValueChange = {firstName = it},
-                                    label = { Text(text = "First Name")},
-                                    singleLine = true,
-                                    isError = firstNameError != null && firstName.isNotBlank(),
-                                )
-                            }
-                            Column (
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(horizontal = 5.dp)
-                            ){
-                                OutlinedTextField(
-                                    value = lastName,
-                                    onValueChange = {lastName = it},
-                                    label = { Text(text = "Last Name")},
-                                    singleLine = true,
-                                    isError = lastNameError != null && lastName.isNotBlank(),
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(10.dp))
-                        OutlinedTextField(
-                            value = registerUsername,
-                            onValueChange = {registerUsername = it},
-                            label = { Text(text = "Username")},
-                            singleLine = true,
-                            isError = registerUserNameError != null && registerUsername.isNotBlank()
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Row (
-                            modifier = Modifier
-                                .width(290.dp)
-                        ){
-                            Column (
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(horizontal = 5.dp)
-                            ){
-                                OutlinedTextField(
-                                    value = registerPassword,
-                                    onValueChange = {registerPassword = it},
-                                    label = { Text(text = "Password")},
-                                    singleLine = true,
-                                    isError = registerPasswordError != null && registerPassword.isNotBlank(),
-                                    visualTransformation = PasswordVisualTransformation()
-                                )
-                            }
-                            Column (
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(horizontal = 5.dp)
-                            ){
-                                OutlinedTextField(
-                                    value = registerConfirmPassword,
-                                    onValueChange = {registerConfirmPassword = it},
-                                    label = { Text(text = "Confirm Pas...")},
-                                    singleLine = true,
-                                    isError = registerConfirmPasswordError != null && registerConfirmPassword.isNotBlank(),
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(40.dp))
-                        ElevatedButton(
-                            modifier = Modifier
-                                .width(250.dp)
-                                .clip(RoundedCornerShape(10.dp)),
-                            enabled = registerUserNameError == null && registerPasswordError == null && registerConfirmPasswordError == null && firstNameError == null && lastNameError == null,
-                            onClick = { /*TODO*/ }
-                        ) {
-                            Text(text = "Login")
-                        }
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Row (
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 30.dp),
-                            horizontalArrangement = Arrangement.End
-                        ){
-                            Text(
-                                text = "Forgot",
-                                style = MaterialTheme.typography.titleMedium,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.inverseSurface,
-                                modifier = Modifier
-                                    .clickable { }
-                                    .padding(end = 10.dp)
-                            )
-                            Text(
-                                text = "password?",
-                                style = MaterialTheme.typography.titleMedium,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.tertiary,
-                                modifier = Modifier
-                                    .clickable { }
-                                    .padding(end = 10.dp),
-                                textDecoration = TextDecoration.Underline
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(50.dp))
-                        Row {
-                            Text(
-                                text = "Already have an account?",
-                                style = MaterialTheme.typography.titleMedium,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.inverseSurface
-                            )
-                            Text(
-                                text = "Login",
-                                style = MaterialTheme.typography.titleMedium,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.tertiary,
-                                modifier = Modifier
-                                    .clickable {
-                                        appViewModel.setIsLogin(true)
-                                        appViewModel.setIsLoading(true)
-                                    }
-                                    .padding(start = 10.dp),
-                                textDecoration = TextDecoration.Underline
-                            )
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
+                    Register(
+                        registerUsername = registerUsername,
+                        registerPassword = registerPassword,
+                        registerConfirmPassword = registerConfirmPassword,
+                        firstName = firstName,
+                        lastName = lastName,
+                        appViewModel = appViewModel,
+                        registerPasswordError = registerPasswordError,
+                        registerConfirmPasswordError = registerConfirmPasswordError,
+                        registerUserNameError = registerUserNameError,
+                        firstNameError = firstNameError,
+                        lastNameError = lastNameError,
+                        registerOverAllError = registerOverAllError,
+                        onPasswordChange = { registerPassword = it },
+                        onUsernameChange = { registerUsername = it },
+                        onConfirmPasswordChange = { registerConfirmPassword = it},
+                        onFirstNameChange = { firstName = it},
+                        onLastNameChange = { lastName = it},
+                        onRegisterButtonClick = {appViewModel.setIsLogin(true)}
+                    )
                 }
             }
         }
@@ -588,4 +341,348 @@ fun BulletPoint(text: String) {
     }
 }
 
+@Composable
+private fun Login(
+    loginUsername: String,
+    loginPassword: String,
+    onPasswordChange: (String) -> Unit,
+    onUsernameChange: (String) -> Unit,
+    userPasswordError: String?,
+    userNameError: String?,
+    overAllError: String?,
+    appViewModel: AppViewModel,
+    onForgotPasswordClick: () -> Unit
+){
+    Column (
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Card (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        ){
+            Spacer(modifier = Modifier.height(50.dp))
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 45.dp)
+                ){
+                    Text(
+                        text = "Login Now!",
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontWeight = FontWeight.W700
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    if (overAllError == null){
+                        Text(
+                            text = "Please enter your credentials to continue.",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.inverseSurface
+                        )
+                    }
+                    else{
+                        Text(
+                            text = overAllError.orEmpty(),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Red
+                        )
+                    }
 
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                OutlinedTextField(
+                    value = loginUsername,
+                    onValueChange = onUsernameChange,
+                    label = { Text(text = "Username",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary
+                        )},
+                    singleLine = true,
+                    isError = userNameError != null && loginUsername.isNotBlank()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedTextField(
+                    value = loginPassword,
+                    onValueChange = onPasswordChange,
+                    label = { Text(text = "Password",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary
+                        )},
+                    singleLine = true,
+                    isError = userPasswordError != null && loginPassword.isNotBlank(),
+                )
+
+                Spacer(modifier = Modifier.height(40.dp))
+                ElevatedButton(
+                    modifier = Modifier
+                        .width(250.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    enabled = userNameError == null && userPasswordError == null,
+                    onClick = { /*TODO*/ }
+                ) {
+                    Text(text = "Login")
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    Text(
+                        text = "Forgot",
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.inverseSurface,
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                    )
+                    Text(
+                        text = "password?",
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier
+                            .clickable { onForgotPasswordClick()}
+                            .padding(end = 10.dp),
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
+                Spacer(modifier = Modifier.height(50.dp))
+                Row {
+                    Text(
+                        text = "Don't have an account?",
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.inverseSurface
+                    )
+                    Text(
+                        text = "Register",
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier
+                            .clickable {
+                                appViewModel.setIsLogin(false)
+                                appViewModel.setIsLoading(true)
+                            }
+                            .padding(start = 10.dp),
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(50.dp))
+        }
+    }
+}
+
+@Composable
+private fun Register(
+    registerUsername: String,
+    registerPassword: String,
+    registerConfirmPassword: String,
+    firstName: String,
+    lastName: String,
+    appViewModel: AppViewModel,
+    registerPasswordError: String?,
+    registerConfirmPasswordError: String?,
+    registerUserNameError: String?,
+    firstNameError: String?,
+    lastNameError: String?,
+    registerOverAllError: String?,
+    onPasswordChange: (String) -> Unit,
+    onUsernameChange: (String) -> Unit,
+    onConfirmPasswordChange: (String) -> Unit,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit,
+    onRegisterButtonClick: () -> Unit
+){
+    Column (
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Card (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Spacer(modifier = Modifier.height(50.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 45.dp)
+                ){
+                    Text(
+                        text = "Sign Up Now!",
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontWeight = FontWeight.W700
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    if (registerOverAllError == null){
+                        Text(
+                            text = "Please enter your credentials to continue.",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.inverseSurface
+                        )
+                    }
+                    else{
+                        Text(
+                            text = registerOverAllError.orEmpty(),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Red
+                        )
+                    }
+
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Row (
+                    modifier = Modifier
+                        .width(290.dp)
+                ){
+                    Column (
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 5.dp)
+                    ){
+                        OutlinedTextField(
+                            value = firstName,
+                            onValueChange = onFirstNameChange,
+                            label = { Text(text = "First Name",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                                )},
+                            singleLine = true,
+                            isError = firstNameError != null && firstName.isNotBlank(),
+                        )
+                    }
+                    Column (
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 5.dp)
+                    ){
+                        OutlinedTextField(
+                            value = lastName,
+                            onValueChange = onLastNameChange,
+                            label = { Text(text = "Last Name",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                                )},
+                            singleLine = true,
+                            isError = lastNameError != null && lastName.isNotBlank(),
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedTextField(
+                    value = registerUsername,
+                    onValueChange = onUsernameChange,
+                    label = { Text(text = "Username",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary
+                        )},
+                    singleLine = true,
+                    isError = registerUserNameError != null && registerUsername.isNotBlank()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Row (
+                    modifier = Modifier
+                        .width(290.dp)
+                ){
+                    Column (
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 5.dp)
+                    ){
+                        OutlinedTextField(
+                            value = registerPassword,
+                            onValueChange = onPasswordChange,
+                            label = { Text(text = "Password",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )},
+                            singleLine = true,
+                            isError = registerPasswordError != null && registerPassword.isNotBlank(),
+                            visualTransformation = PasswordVisualTransformation()
+                        )
+                    }
+                    Column (
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 5.dp)
+                    ){
+                        OutlinedTextField(
+                            value = registerConfirmPassword,
+                            onValueChange = onConfirmPasswordChange,
+                            label = { Text(
+                                text = "Confirm Password",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )},
+                            singleLine = true,
+                            isError = registerConfirmPasswordError != null && registerConfirmPassword.isNotBlank(),
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+                ElevatedButton(
+                    modifier = Modifier
+                        .width(250.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    enabled = registerUserNameError == null && registerPasswordError == null && registerConfirmPasswordError == null && firstNameError == null && lastNameError == null,
+                    onClick = {
+                        onRegisterButtonClick()
+                    }
+                ) {
+                    Text(text = "Register")
+                }
+                Spacer(modifier = Modifier.height(50.dp))
+                Row {
+                    Text(
+                        text = "Already have an account?",
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.inverseSurface
+                    )
+                    Text(
+                        text = "Login",
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier
+                            .clickable {
+                                appViewModel.setIsLogin(true)
+                                appViewModel.setIsLoading(true)
+                            }
+                            .padding(start = 10.dp),
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(50.dp))
+        }
+    }
+}
