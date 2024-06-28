@@ -48,17 +48,14 @@ import com.example.xstudy.components.CountCard
 import com.example.xstudy.components.DeleteDialog
 import com.example.xstudy.components.studySessionsList
 import com.example.xstudy.components.taskList
-import com.example.xstudy.destinations.TaskScreenRouteDestination
 import com.example.xstudy.domain.model.Subject
 import com.example.xstudy.sessions
 import com.example.xstudy.task.TaskScreeNavArgn
 import com.example.xstudy.tasks
-import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 data class SubjectScreenNavArgs(val subjectID: Int)
 
-@Destination(navArgsDelegate = SubjectScreenNavArgs::class)
 @Composable
 fun SubjectScreenRoute(
     navigator: DestinationsNavigator,
@@ -67,11 +64,11 @@ fun SubjectScreenRoute(
         onBackArrowClick = {navigator.popBackStack()},
         onAddTaskButtonClick = {
             val navArg = TaskScreeNavArgn(subjectID = -1, taskID = null)
-            navigator.navigate(TaskScreenRouteDestination(navArgs = navArg))
+           // navigator.navigate(TaskScreenRouteDestination(navArgs = navArg))
         },
         onTaskCardClick = {
             val navArg = TaskScreeNavArgn(subjectID = null, taskID = it)
-            navigator.navigate(TaskScreenRouteDestination(navArgs = navArg))
+            //navigator.navigate(TaskScreenRouteDestination(navArgs = navArg))
         }
     )
 }

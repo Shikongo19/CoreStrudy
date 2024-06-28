@@ -42,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.2"
     }
     packaging {
         resources {
@@ -52,7 +52,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -72,7 +71,7 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.runtime.compose)
 
-    //compose destination
+    // Compose destination
     implementation(libs.core)
     ksp(libs.ksp)
 
@@ -81,15 +80,24 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
-    //Dagger-Hilt
+    // Dagger-Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    //fonts
+    // Fonts
     implementation(libs.androidx.ui.text.google.fonts.v153)
 
-    //Desugaring
+    // Desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // System UI Controller
+    implementation(libs.accompanist.systemuicontroller)
+
+    // Extended Icons
+    implementation(libs.androidx.material.icons.extended)
+
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 }

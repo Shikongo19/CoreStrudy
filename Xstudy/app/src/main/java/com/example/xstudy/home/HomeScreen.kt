@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.xstudy.domain.model.MotivationQuote
+import com.example.xstudy.domain.model.Subject
+import com.example.xstudy.subjects
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
@@ -48,9 +50,9 @@ fun HomeScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp)
                 .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item { WelcomeText(firstName) }
             item { MotivationalQuote(motivationalQuotes) }
@@ -63,12 +65,7 @@ fun HomeScreen(
 }
 
 fun getRandomColor(): Color {
-    return Color(
-        red = Random.nextFloat(),
-        green = Random.nextFloat(),
-        blue = Random.nextFloat(),
-        alpha = 1f
-    )
+    return Subject.subjectCardColors.random()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,18 +100,23 @@ fun HomeTopBar(
 
 @Composable
 fun WelcomeText(firstName: String) {
-    Spacer(modifier = Modifier.height(26.dp))
-    Text(
-        text = "Welcome back, $firstName!",
-        style = MaterialTheme.typography.headlineMedium,
-        fontWeight = FontWeight.Bold
-    )
-    Spacer(modifier = Modifier.height(26.dp))
-    Text(
-        text = "Welcome back!",
-        style = MaterialTheme.typography.bodyMedium,
-    )
-    Spacer(modifier = Modifier.height(26.dp))
+    Column (
+        modifier = Modifier
+            .padding(start = 16.dp)
+    ){
+        Spacer(modifier = Modifier.height(26.dp))
+        Text(
+            text = "Welcome back, $firstName!",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(26.dp))
+        Text(
+            text = "Welcome back!",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Spacer(modifier = Modifier.height(26.dp))
+    }
 }
 
 @Composable
@@ -122,17 +124,18 @@ fun MotivationalQuote(quotes: List<MotivationQuote>) {
     val defaultQuote = MotivationQuote(0, "Default", "Always strive to improve.")
     var currentQuote by remember { mutableStateOf(quotes.firstOrNull() ?: defaultQuote) }
     var backgroundColor by remember { mutableStateOf(getRandomColor()) }
-    var progress by remember { mutableStateOf(1f) }
+    var progress by remember { mutableStateOf(0f) }
 
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
-        animationSpec = tween(durationMillis = 8000)
+        animationSpec = tween(durationMillis = 8000),
+        label = "Progress"
     )
 
     LaunchedEffect(Unit) {
         while (true) {
             progress = 1f
-            delay(8.seconds)
+            delay(10.seconds)
             currentQuote = quotes.random()
             backgroundColor = getRandomColor()
             progress = 0f
@@ -140,13 +143,14 @@ fun MotivationalQuote(quotes: List<MotivationQuote>) {
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Column(
             modifier = Modifier
-                .heightIn(min = 150.dp, max = 150.dp)
+                .height(100.dp)
                 .verticalScroll(state = rememberScrollState())
                 .padding(16.dp)
         ) {
@@ -182,7 +186,8 @@ fun SubjectsList(subjects: List<String>, onSubjectClick: (String) -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(subjects) { subject ->
-            ElevatedButton(onClick = { onSubjectClick(subject) }) {
+            ElevatedButton(
+                modifier = Modifier.padding(start = 10.dp),onClick = { onSubjectClick(subject) }) {
                 Text(subject)
             }
         }
@@ -200,7 +205,8 @@ fun ActionCards(onCardClick: (String) -> Unit) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(start = 10.dp)
         ) {
             items(actions) { action ->
                 ActionCard(action, onCardClick)
@@ -216,7 +222,7 @@ fun ActionCard(action: String, onClick: (String) -> Unit) {
     Card(
         modifier = Modifier
             .size(120.dp)
-            .padding(start = 10.dp)
+            .padding(start = 16.dp)
             .clickable { onClick(action) },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1B556C)),
@@ -251,10 +257,11 @@ fun ActivityCards(onCardClick: (String) -> Unit) {
         Text(
             text = "Activities",
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(start = 16.dp)
         )
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(start = 16.dp)
         ) {
             items(activities) { activity ->
                 ActionCard(activity, onCardClick)
@@ -274,7 +281,7 @@ fun LearningSubjects(onSubjectClick: (String) -> Unit) {
         Text(
             text = "Subjects to Learn",
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(start = 16.dp)
         )
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)

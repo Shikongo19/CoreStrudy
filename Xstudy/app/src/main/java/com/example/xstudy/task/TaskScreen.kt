@@ -53,14 +53,13 @@ import com.example.xstudy.components.TaskDatePicker
 import com.example.xstudy.subjects
 import com.example.xstudy.util.Priority
 import com.example.xstudy.util.changeMillisToDateString
-import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 import java.time.Instant
 
 data class TaskScreeNavArgn(val subjectID: Int?, val taskID: Int?)
 
-@Destination(navArgsDelegate = TaskScreeNavArgn::class)
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TaskScreenRoute(

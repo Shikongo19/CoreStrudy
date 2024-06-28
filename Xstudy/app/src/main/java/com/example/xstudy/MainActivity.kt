@@ -1,36 +1,43 @@
 package com.example.xstudy
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.xstudy.authentication.ReturningUserScreen
-import com.example.xstudy.authentication.authentication
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.xstudy.authentication.Authentication
+import com.example.xstudy.authentication.Login
+import com.example.xstudy.authentication.Register
+import com.example.xstudy.dashbord.DashBoardScreenRoute
 import com.example.xstudy.domain.model.MotivationQuote
 import com.example.xstudy.domain.model.Session
 import com.example.xstudy.domain.model.Subject
 import com.example.xstudy.domain.model.Task
-import com.example.xstudy.loader.ScreenLoader
+import com.example.xstudy.home.HomeDisplay
+import com.example.xstudy.navigation.Routes
 import com.example.xstudy.repositories.AppViewModel
 import com.example.xstudy.ui.theme.XstudyTheme
-import com.ramcosta.composedestinations.DestinationsNavHost
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
+
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.S)
@@ -39,30 +46,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             XstudyTheme {
-                val appViewModel: AppViewModel = viewModel()
-                var isToNextPage by rememberSaveable { mutableStateOf(false) }
-                var isDone by rememberSaveable { mutableStateOf(false) }
-                val isLoading by appViewModel.isLoading.collectAsState()
-
-                val authenticated by appViewModel.authenticated.collectAsState()
-
-                if (authenticated){
-                    appViewModel.setIsLoading(true)
-                    LaunchedEffect(Unit) {
-                        delay(1000)
-                        isToNextPage = true
-                    }
-                    if (isToNextPage){
-                        DestinationsNavHost(navGraph = NavGraphs.root)
-                        appViewModel.setIsLoading(false)
-                    }
-                    ScreenLoader(isLoading = isLoading) {
-                    }
-                }
-                else{
-                    authentication(appViewModel)
-                }
-
+                AppControl()
             }
         }
     }
@@ -71,10 +55,10 @@ class MainActivity : ComponentActivity() {
 
 val subjects = listOf(
     Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[0], subjectID = 0),
-    Subject(name = "Math", goalHours = 12f, colors = Subject.subjectCardColors[2], subjectID = 1),
-    Subject(name = "Physic", goalHours = 12f, colors = Subject.subjectCardColors[3], subjectID = 2),
-    Subject(name = "Programming", goalHours = 12f, colors = Subject.subjectCardColors[1], subjectID = 3),
-    Subject(name = "Biology", goalHours = 12f, colors = Subject.subjectCardColors[0], subjectID = 4),
+    Subject(name = "Math", goalHours = 12f, colors = Subject.subjectCardColors[1], subjectID = 1),
+    Subject(name = "Physic", goalHours = 12f, colors = Subject.subjectCardColors[2], subjectID = 2),
+    Subject(name = "Programming", goalHours = 12f, colors = Subject.subjectCardColors[3], subjectID = 3),
+    Subject(name = "Biology", goalHours = 12f, colors = Subject.subjectCardColors[1], subjectID = 4),
     Subject(name = "Data Networks", goalHours = 12f, colors = Subject.subjectCardColors[2], subjectID = 5)
 )
 
@@ -147,3 +131,95 @@ val motivationalQuotes = listOf(
     MotivationQuote(49, "Resilience", "You may encounter many defeats, but you must not be defeated. - Maya Angelou"),
     MotivationQuote(50, "Purpose", "The purpose of life is not to be happy. It is to be useful, to be honorable, to be compassionate, to have it make some difference that you have lived and lived well. - Ralph Waldo Emerson")
 )
+
+ fun showToast(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
+
+@Composable
+fun AppControl() {
+    val systemUiController = rememberSystemUiController()
+    val isNavBarVisible = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        systemUiController.isNavigationBarVisible = false
+    }
+
+    LaunchedEffect(isNavBarVisible.value) {
+        if (isNavBarVisible.value) {
+            systemUiController.isNavigationBarVisible = true
+            delay(2000)
+            isNavBarVisible.value = false
+            systemUiController.isNavigationBarVisible = false
+        }
+    }
+
+    SwipeDetector(
+        onSwipeUp = { isNavBarVisible.value = true }
+    ) {
+        // Your app content goes here
+        AppContent()
+    }
+}
+
+@Composable
+fun AppContent() {
+    val navController = rememberNavController()
+    val appViewModel: AppViewModel = viewModel()
+
+    NavHost(navController = navController, startDestination = Routes.App.routes) {
+
+        composable(Routes.App.routes){
+            App(navController)
+        }
+
+        composable(Routes.HomeDisplay.routes){
+            HomeDisplay(navController)
+        }
+
+        composable(Routes.DashBoardScreenRoute.routes){
+            DashBoardScreenRoute(navController)
+        }
+
+        composable(Routes.Login.routes){
+            Login(navController = navController, appViewModel = appViewModel)
+        }
+
+        composable(Routes.Register.routes){
+            Register(appViewModel = appViewModel, navController = navController)
+        }
+
+        composable(Routes.Authentication.routes){
+            Authentication(navController = navController)
+        }
+    }
+}
+
+@Composable
+fun SwipeDetector(
+    onSwipeUp: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    val offsetY = remember { mutableStateOf(0f) }
+    val context = LocalContext.current
+
+    Box(
+        Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragEnd = {
+                        if (offsetY.value < -50) {
+                            onSwipeUp()
+                        }
+                        offsetY.value = 0f
+                    }
+                ) { change, dragAmount ->
+                    change.consume()
+                    offsetY.value += dragAmount.y
+                }
+            }
+    ) {
+        content()
+    }
+}

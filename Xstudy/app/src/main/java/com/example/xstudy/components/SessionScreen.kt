@@ -36,11 +36,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.xstudy.sessions
 import com.example.xstudy.subjects
-import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
-@Destination
+
 @Composable
 fun SessionScreenRoute(
     navigator: DestinationsNavigator

@@ -18,7 +18,7 @@ class AppViewModel : ViewModel() {
 
     // MutableStateFlow for login screen visibility
     // Private to prevent direct modification from outside the ViewModel
-    private val _isLogin = MutableStateFlow(true)
+    private val _isLogin = MutableStateFlow(false)
 
     // Public read-only StateFlow for observing login screen visibility
     val isLogin = _isLogin.asStateFlow()
