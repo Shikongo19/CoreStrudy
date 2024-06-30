@@ -80,18 +80,6 @@ fun QuizeCardSection(
                     onClick = {onSubjectCardClick()},
                     image = R.drawable.studying_rafiki
                 )
-                QuizeCard(
-                    subjectName = "Chat With Friends",
-                    grdientColor = Subject.QuizeCardColors.random(),
-                    onClick = {onSubjectCardClick()},
-                    image = R.drawable.chat
-                )
-                QuizeCard(
-                    subjectName = "Meet Like Minded Friends",
-                    grdientColor = Subject.QuizeCardColors.random(),
-                    onClick = {onSubjectCardClick()},
-                    image = R.drawable.note_book
-                )
             }
         }
     }
