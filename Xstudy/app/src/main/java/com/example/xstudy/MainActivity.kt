@@ -58,7 +58,7 @@ val subjects = listOf(
     Subject(name = "English", goalHours = 12f, colors = Subject.subjectCardColors[0], subjectID = 0),
     Subject(name = "Math", goalHours = 12f, colors = Subject.subjectCardColors[1], subjectID = 1),
     Subject(name = "Physic", goalHours = 12f, colors = Subject.subjectCardColors[2], subjectID = 2),
-    Subject(name = "Programming", goalHours = 12f, colors = Subject.subjectCardColors[3], subjectID = 3),
+    Subject(name = "Programming", goalHours = 12f, colors = Subject.subjectCardColors[0], subjectID = 3),
     Subject(name = "Biology", goalHours = 12f, colors = Subject.subjectCardColors[1], subjectID = 4),
     Subject(name = "Data Networks", goalHours = 12f, colors = Subject.subjectCardColors[2], subjectID = 5)
 )

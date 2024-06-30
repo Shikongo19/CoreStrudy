@@ -3,10 +3,12 @@ package com.example.xstudy.home
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,9 +41,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.xstudy.R
 import com.example.xstudy.components.AddScreenDialog
 import com.example.xstudy.components.BottomCardSection
 import com.example.xstudy.components.DeleteDialog
+import com.example.xstudy.components.ModuleCard
+import com.example.xstudy.components.ModuleScreen
 import com.example.xstudy.components.QuizeCardSection
 import com.example.xstudy.components.SubjectCardSection
 import com.example.xstudy.domain.model.Subject
@@ -55,9 +60,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeDisplay(navController: NavController) {
-    val subjects = listOf("Math", "Science", "History", "English", "Art")
     val appViewModel = AppViewModel()
-    val isLogin = appViewModel.isLogin.collectAsState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val listState = rememberLazyListState()
 
@@ -127,8 +130,12 @@ fun HomeDisplay(navController: NavController) {
                     onSubjectCardClick = {}
                 )
             }
-            item { MotivationalQuote(appViewModel.didYouKnow.value) }
 
+            item { MotivationalQuote(appViewModel.didYouKnow.value) }
+            item { Spacer(modifier = Modifier.height(30.dp)) }
+            item {
+                ModuleScreen(modifier = Modifier.fillMaxWidth())
+            }
         }
     }
 }
