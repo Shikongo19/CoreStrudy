@@ -16,31 +16,36 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.xstudy.R
 
 @Composable
-fun SubjectCard(
+fun QuizeCard(
     modifier: Modifier = Modifier,
     subjectName: String,
     grdientColor: Color,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    image: Int
 ){
     Box (
         modifier = modifier
-            .size(150.dp)
+            .width(100.dp)
+            .height(150.dp)
             .clip(RoundedCornerShape(size = 10.dp))
+            .padding(start = 10.dp)
     ){
         Column {
             Box (
                 modifier = modifier
-                    .width(150.dp)
-                    .height(120.dp)
+                    .width(100.dp)
+                    .height(100.dp)
                     .clip(RoundedCornerShape(size = 10.dp))
                     .clickable { onClick() }
                     .background(
@@ -52,7 +57,7 @@ fun SubjectCard(
                     verticalArrangement = Arrangement.Center
                 ){
                     Image(
-                        painter = painterResource(R.drawable.note_book),
+                        painter = painterResource(image),
                         contentDescription ="",
                         modifier =  Modifier.fillMaxSize()
                     )
@@ -62,13 +67,15 @@ fun SubjectCard(
             Column (
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 10.dp, vertical = 4.dp)
+                    .padding(top = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Text(
                     text = subjectName,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.tertiary,
                     fontWeight = FontWeight.W700,
+                    textAlign = TextAlign.Center
                 )
             }
 

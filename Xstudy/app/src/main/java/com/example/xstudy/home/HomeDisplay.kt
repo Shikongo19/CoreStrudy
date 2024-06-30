@@ -1,5 +1,6 @@
 package com.example.xstudy.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +37,7 @@ import androidx.navigation.NavController
 import com.example.xstudy.components.AddScreenDialog
 import com.example.xstudy.components.BottomCardSection
 import com.example.xstudy.components.DeleteDialog
+import com.example.xstudy.components.QuizeCardSection
 import com.example.xstudy.components.SubjectCardSection
 import com.example.xstudy.domain.model.Subject
 import com.example.xstudy.domain.model.Users
@@ -44,6 +46,7 @@ import com.example.xstudy.repositories.AppViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeDisplay(navController: NavController) {
@@ -93,16 +96,16 @@ fun HomeDisplay(navController: NavController) {
                 scrollBehavior = scrollBehavior
             )
         },
-        bottomBar = {
-            BottomCardSection(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                subjectCount = 5,
-                studiedHours = "9",
-                goalHours = "5"
-            )
-        },
+//        bottomBar = {
+//            BottomCardSection(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(10.dp),
+//                subjectCount = 5,
+//                studiedHours = "9",
+//                goalHours = "5"
+//            )
+//        },
     ){ paddingValues ->
         LazyColumn (
             state = listState,
@@ -111,14 +114,14 @@ fun HomeDisplay(navController: NavController) {
                 .padding(paddingValues)
         ){
             item {
-                SubjectCardSection(
+                QuizeCardSection(
                     modifier = Modifier.fillMaxWidth(),
-                    onAddIconClick = {isAddSubject = true},
-                    subjectlist = com.example.xstudy.subjects,
-                    onSubjectCardClick = {navController.navigate(Routes.DashBoardScreenRoute.routes)}
+                    onAddIconClick = { /*TODO*/ },
+                    quizeName = "math",
+                    onSubjectCardClick = {}
                 )
             }
-
+            item { MotivationalQuote(appViewModel.didYouKnow.value) }
         }
     }
 }

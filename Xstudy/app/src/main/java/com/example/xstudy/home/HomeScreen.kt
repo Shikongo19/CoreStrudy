@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.xstudy.domain.model.DidYouKnow
 import com.example.xstudy.domain.model.MotivationQuote
 import com.example.xstudy.domain.model.Subject
 import com.example.xstudy.subjects
@@ -55,7 +57,7 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item { WelcomeText(firstName) }
-            item { MotivationalQuote(motivationalQuotes) }
+
             item { SubjectsList(subjects, onSubjectClick) }
             item { ActionCards(onCardClick) }
             item { ActivityCards(onCardClick) }
@@ -65,7 +67,7 @@ fun HomeScreen(
 }
 
 fun getRandomColor(): Color {
-    return Subject.subjectCardColors.random()
+    return Subject.OtherCardColors.random()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,8 +122,20 @@ fun WelcomeText(firstName: String) {
 }
 
 @Composable
-fun MotivationalQuote(quotes: List<MotivationQuote>) {
-    val defaultQuote = MotivationQuote(0, "Default", "Always strive to improve.")
+fun titleSmall(title: String)
+{
+    Text(
+        text = title,
+        style = MaterialTheme.typography.headlineSmall,
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+        fontSize = 18.sp,
+        fontWeight = FontWeight.W700,
+        color = MaterialTheme.colorScheme.primary
+    )
+}
+@Composable
+fun MotivationalQuote(quotes: List<DidYouKnow>) {
+    val defaultQuote = DidYouKnow(0, "Did you know?", "")
     var currentQuote by remember { mutableStateOf(quotes.firstOrNull() ?: defaultQuote) }
     var backgroundColor by remember { mutableStateOf(getRandomColor()) }
     var progress by remember { mutableStateOf(0f) }
@@ -135,48 +149,38 @@ fun MotivationalQuote(quotes: List<MotivationQuote>) {
     LaunchedEffect(Unit) {
         while (true) {
             progress = 1f
-            delay(10.seconds)
+            delay(15.seconds)
             currentQuote = quotes.random()
             backgroundColor = getRandomColor()
             progress = 0f
         }
     }
+    Row {
+        titleSmall(title = "Did you know ?")
+    }
 
     Card(
-        modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 5.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Column(
             modifier = Modifier
-                .height(100.dp)
+                .height(150.dp)
                 .verticalScroll(state = rememberScrollState())
                 .padding(16.dp)
         ) {
             Text(
-                text = currentQuote.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = currentQuote.quote,
+                text = currentQuote.body,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(16.dp))
 
         }
-        LinearProgressIndicator(
-                progress = animatedProgress,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(4.dp),
-        color = Color.White,
-        trackColor = Color.Green.copy(alpha = 0.3f)
-        )
+
     }
 }
 

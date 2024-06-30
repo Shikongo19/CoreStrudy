@@ -17,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -142,13 +143,14 @@ fun AppControl() {
     val isNavBarVisible = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(Color.Unspecified)
         systemUiController.isNavigationBarVisible = false
     }
 
     LaunchedEffect(isNavBarVisible.value) {
         if (isNavBarVisible.value) {
             systemUiController.isNavigationBarVisible = true
-            delay(2000)
+            delay(1000)
             isNavBarVisible.value = false
             systemUiController.isNavigationBarVisible = false
         }

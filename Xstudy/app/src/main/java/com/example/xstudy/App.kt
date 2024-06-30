@@ -31,10 +31,10 @@ fun App(navController: NavController){
         ) {
 
             composable(route = Routes.DashBoardScreenRoute.routes){
-                DashBoardScreenRoute(navControllerOne)
+                DashBoardScreenRoute(navController)
             }
             composable(route = Routes.HomeDisplay.routes){
-                HomeDisplay(navControllerOne)
+                HomeDisplay(navController)
             }
             composable(route = Routes.Authentication.routes){
                 Authentication(navController = navController)

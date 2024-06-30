@@ -99,14 +99,14 @@ private fun DashboardScreen(
 
     Scaffold (
         topBar = { DashBoardScreenTopBar()},
-        bottomBar = {
-            BottomCardSection(
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
-                subjectCount = 5,
-                studiedHours = "29",
-                goalHours = "55"
-            )
-        },
+//        bottomBar = {
+//            BottomCardSection(
+//                modifier = Modifier.fillMaxWidth().padding(10.dp),
+//                subjectCount = 5,
+//                studiedHours = "29",
+//                goalHours = "55"
+//            )
+//        },
         modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
     ){ paddingValues ->
         LazyColumn (
