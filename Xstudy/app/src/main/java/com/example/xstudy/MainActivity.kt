@@ -1,8 +1,10 @@
 package com.example.xstudy
 
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,10 +18,12 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,12 +36,14 @@ import com.example.xstudy.domain.model.MotivationQuote
 import com.example.xstudy.domain.model.Session
 import com.example.xstudy.domain.model.Subject
 import com.example.xstudy.domain.model.Task
+import com.example.xstudy.drawing.DrawingScreen
 import com.example.xstudy.home.HomeDisplay
 import com.example.xstudy.navigation.Routes
 import com.example.xstudy.repositories.AppViewModel
 import com.example.xstudy.ui.theme.XstudyTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
@@ -137,42 +143,66 @@ val motivationalQuotes = listOf(
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
+
 @Composable
 fun AppControl() {
     val systemUiController = rememberSystemUiController()
-    val isNavBarVisible = remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val view = LocalView.current
+    val window = (view.context as? Activity)?.window
 
     LaunchedEffect(Unit) {
-        systemUiController.setStatusBarColor(Color.Unspecified)
-        systemUiController.isNavigationBarVisible = false
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = true
+        )
+        hideSystemUI(window, view)
     }
 
-    LaunchedEffect(isNavBarVisible.value) {
-        if (isNavBarVisible.value) {
-            systemUiController.isNavigationBarVisible = true
-            delay(1000)
-            isNavBarVisible.value = false
-            systemUiController.isNavigationBarVisible = false
-        }
-    }
-
-    SwipeDetector(
-        onSwipeUp = { isNavBarVisible.value = true }
-    ) {
-        // Your app content goes here
+    Box(modifier = Modifier.fillMaxSize()) {
         AppContent()
+
+        SwipeDetector(
+            onSwipeUp = {
+                coroutineScope.launch {
+                    showSystemUI(window, view)
+                    delay(1000)
+                    hideSystemUI(window, view)
+                }
+            }
+        )
     }
+}
+
+fun hideSystemUI(window: android.view.Window?, view: View) {
+    window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+    view.setOnApplyWindowInsetsListener { _, insets ->
+        insets
+    }
+}
+
+fun showSystemUI(window: android.view.Window?, view: View) {
+    window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+    view.setOnApplyWindowInsetsListener(null)
 }
 
 @Composable
 fun AppContent() {
+    // Your existing AppContent code
     val navController = rememberNavController()
     val appViewModel: AppViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Routes.App.routes) {
 
         composable(Routes.App.routes){
-            App(navController)
+            App(navController, appViewModel)
         }
 
         composable(Routes.HomeDisplay.routes){
@@ -194,14 +224,16 @@ fun AppContent() {
         composable(Routes.Authentication.routes){
             Authentication(navController = navController)
         }
+
+        composable(Routes.DrawingScreen.routes){
+            DrawingScreen(navController, appViewModel)
+        }
     }
 }
 
 @Composable
-fun SwipeDetector(
-    onSwipeUp: () -> Unit,
-    content: @Composable () -> Unit
-) {
+fun SwipeDetector(onSwipeUp: () -> Unit) {
+    // Your existing SwipeDetector code
     val offsetY = remember { mutableStateOf(0f) }
     val context = LocalContext.current
 
@@ -222,6 +254,6 @@ fun SwipeDetector(
                 }
             }
     ) {
-        content()
+        AppContent()
     }
 }

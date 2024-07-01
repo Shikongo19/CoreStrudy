@@ -25,16 +25,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.xstudy.R
 import com.example.xstudy.domain.model.Subject
 import com.example.xstudy.home.titleSmall
+import com.example.xstudy.navigation.Routes
 
 @Composable
 fun QuizeCardSection(
     modifier: Modifier,
-    onAddIconClick: () -> Unit,
-    quizeName: String,
-    onSubjectCardClick: () -> Unit
+    navController: NavController
 ){
     Column (
         modifier = modifier,
@@ -59,25 +59,25 @@ fun QuizeCardSection(
                 QuizeCard(
                     subjectName = "Start Study",
                     grdientColor = Subject.QuizeCardColors.random(),
-                    onClick = {onSubjectCardClick()},
+                    onClick = {navController.navigate(Routes.DashBoardScreenRoute.routes)},
                     image = R.drawable.start
                 )
                 QuizeCard(
                     subjectName = "Take Quiz",
                     grdientColor = Subject.QuizeCardColors.random(),
-                    onClick = {onSubjectCardClick()},
+                    onClick = {},
                     image = R.drawable.quize
                 )
                 QuizeCard(
                     subjectName = "Take Notes",
                     grdientColor = Subject.QuizeCardColors.random(),
-                    onClick = {onSubjectCardClick()},
+                    onClick = {},
                     image = R.drawable.note_book
                 )
                 QuizeCard(
                     subjectName = "Make Drawings",
                     grdientColor = Subject.QuizeCardColors.random(),
-                    onClick = {onSubjectCardClick()},
+                    onClick = {navController.navigate(Routes.DrawingScreen.routes)},
                     image = R.drawable.studying_rafiki
                 )
             }

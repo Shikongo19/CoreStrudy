@@ -8,5 +8,6 @@ sealed class Routes (val routes:String){
     data object HomeDisplay : Routes("homeDisplay")
     data object DashBoardScreenRoute : Routes("dashBoard")
     data object Authentication : Routes("authentication")
+    data object DrawingScreen : Routes("drawingScreen")
 
 }

@@ -12,15 +12,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.xstudy.authentication.Authentication
 import com.example.xstudy.authentication.Login
 import com.example.xstudy.dashbord.DashBoardScreenRoute
+import com.example.xstudy.drawing.DrawingScreen
 import com.example.xstudy.home.HomeDisplay
 import com.example.xstudy.navigation.Routes
 import com.example.xstudy.repositories.AppViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun App(navController: NavController){
+fun App(navController: NavController, appViewModel: AppViewModel){
     val navControllerOne = rememberNavController()
-
 
     Scaffold (
     ){
@@ -31,13 +31,16 @@ fun App(navController: NavController){
         ) {
 
             composable(route = Routes.DashBoardScreenRoute.routes){
-                DashBoardScreenRoute(navController)
+                DashBoardScreenRoute(navControllerOne)
             }
             composable(route = Routes.HomeDisplay.routes){
-                HomeDisplay(navController)
+                HomeDisplay(navControllerOne)
             }
             composable(route = Routes.Authentication.routes){
-                Authentication(navController = navController)
+                Authentication(navController = navControllerOne)
+            }
+            composable(Routes.DrawingScreen.routes){
+                DrawingScreen(navControllerOne, appViewModel)
             }
         }
     }

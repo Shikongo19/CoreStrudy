@@ -2,7 +2,9 @@ package com.example.xstudy.home
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -125,12 +130,33 @@ fun HomeDisplay(navController: NavController) {
             item {
                 QuizeCardSection(
                     modifier = Modifier.fillMaxWidth(),
-                    onAddIconClick = { /*TODO*/ },
-                    quizeName = "math",
-                    onSubjectCardClick = {}
+                    navController
                 )
             }
+            item { Spacer(modifier = Modifier.height(10.dp)) }
+            item {
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    ElevatedButton(onClick = { /*TODO*/ }) {
+                        Text(
+                            text = "Get Me A Story Book"
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Icon(
+                            imageVector = Icons.Default.MenuBook,
+                            contentDescription ="",
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
 
+                }
+            }
+            item { Spacer(modifier = Modifier.height(10.dp)) }
             item { MotivationalQuote(appViewModel.didYouKnow.value) }
             item { Spacer(modifier = Modifier.height(30.dp)) }
             item {
