@@ -104,7 +104,7 @@ fun DrawingScreen(
                 modifier = Modifier
                     .padding(3.dp),
                 onClick = {
-                    lines = mutableListOf()
+                    lines.clear()
                 },
                 colors = ButtonDefaults.buttonColors(Color(250, 32, 32))
             ) {
